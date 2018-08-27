@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout (title, content)">
+<head>
+    <title th:replace="${title}">Layout Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<h1>Layout H1</h1>
+
+<div th:replace="${content}">
+    <p>Layout content</p>
+</div>
+
+<div>
+    <!-- 模板布局 -->
+    <div th:insert="~{thymeleaf/footer :: copy}"></div>
+</div>
+
+</body>
+</html>

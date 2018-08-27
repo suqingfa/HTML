@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{thymeleaf/layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="utf-8"/>
+    <title>thymeleaf</title>
+</head>
+<body>
+<section>
+
+    <!--
+    标准表达式功能的快速摘要：
+
+    简单表达：
+        变量表达式： ${...}
+        选择变量表达式： *{...}
+        消息表达式： #{...}
+        链接网址表达式： @{...}
+        片段表达式： ~{...}
+
+    字面
+        文本文字：'one text'，'Another one!'，...
+        号码文字：0，34，3.0，12.3，...
+        布尔文字：true，false
+        空字面： null
+        文字标记：one，sometext，main，...
+
+    文字操作：
+        字符串连接： +
+        文字替换： |The name is ${name}|
+
+    算术运算：
+        二元运算符：+，-，*，/，%
+        负号（一元运算符）： -
+    布尔运算：
+        二元运算符：and，or
+        布尔否定（一元运算符）： !，not
+
+    比较和平等：
+        比较：>，<，>=，<=（gt，lt，ge，le）
+        平等运营商：==，!=（eq，ne）
+
+    条件：
+        IF-THEN： (if) ? (then)
+        IF-THEN-ELSE： (if) ? (then) : (else)
+        默认： (value) ?: (defaultvalue)
+    -->
+
+    <div>
+        <!--从 *.properties 读取属性-->
+        <!--thymeleaf 默认对标签进行转义-->
+        <p th:text="#{thymeleaf.welcome}">Welcome to our grocery store!</p>
+        <p th:utext="#{thymeleaf.welcome}">Welcome to our grocery store!</p>
+
+        <!--在消息中使用变量-->
+        <p th:text="#{thymeleaf.sessionId(${session.id})}">session</p>
+    </div>
+
+    <div>
+        <!--使用变量-->
+        <p>Now is: <span th:text="${dateTime}">2018/8/25</span></p>
+
+        <!--
+        表达式基本对象
+            #ctx：上下文对象。
+            #vars: 上下文变量。
+            #locale：上下文区域设置。
+            #request:(仅限Web Contexts）HttpServletRequest对象。
+            #response:(仅限Web Contexts）HttpServletResponse对象。
+            #session:(仅限Web Contexts）HttpSession对象。
+            #servletContext:(仅限Web Contexts）ServletContext对象。
+
+        参考 https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appendix-a-expression-basic-objects
+        -->
+        <p>Established locale country: <span th:text="${#locale.country}">US</span>.</p>
+
+        <!--
+        Expression Utility 对象
+            #execInfo：有关正在处理的模板的信息。
+            #messages：在变量表达式中获取外化消息的方法，与使用＃{...}语法获取的方法相同。
+            #uris：转义部分URL / URI的方法
+            #conversions：用于执行已配置的转换服务的方法（如果有）。
+            #dates：java.util.Date对象的方法：格式化，组件提取等。
+            #calendars：类似于#dates，但java.util.Calendar对象。
+            #numbers：格式化数字对象的方法。
+            #strings：String对象的方法：contains，startsWith，prepending / appending等。
+            #objects：一般的对象的方法。
+            #bools：布尔评估的方法。
+            #arrays：数组的方法。
+            #lists：列表方法。
+            #sets：集合的方法。
+            #maps：地图的方法。
+            #aggregates：在数组或集合上创建聚合的方法。
+            #ids：处理可能重复的id属性的方法（例如，作为迭代的结果）。
+
+        参考 https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#appendix-b-expression-utility-objects
+        -->
+    </div>
+
+    <div>
+        <!--
+        选择表达式
+        <div th:object="${session.user}">
+            <p>Name: <span th:text="*{firstName}">Sebastian</span>.</p>
+            <p>Surname: <span th:text="*{lastName}">Pepper</span>.</p>
+            <p>Nationality: <span th:text="*{nationality}">Saturn</span>.</p>
+        </div>
+        这完全等同于：
+        <div>
+            <p>Name: <span th:text="${session.user.firstName}">Sebastian</span>.</p>
+            <p>Surname: <span th:text="${session.user.lastName}">Pepper</span>.</p>
+            <p>Nationality: <span th:text="${session.user.nationality}">Saturn</span>.</p>
+        </div>
+        -->
+    </div>
+
+    <div>
+        <!-- 迭代
+        状态变量 在th:each属性中定义，包含以下数据：
+            当前迭代索引，从0开始。index
+            当前迭代索引，从1开始。count
+            迭代变量中元素的总量。size
+            每次迭代的iter变量。current
+            当前迭代是偶数还是奇数。even/odd布尔
+            当前迭代是否是第一个迭代。first布尔
+            当前迭代是否是最后一次。last布尔
+        -->
+        list :
+        <span th:each="e : ${list}" th:text="${e}"></span>
+    </div>
+
+</section>
+</body>
+</html>
