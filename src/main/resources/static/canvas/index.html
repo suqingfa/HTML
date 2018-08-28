@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+</head>
+<body>
+<canvas id="myCanvas" width="400" height="1000">您的浏览器不支持canvas！</canvas>
+<script type="text/javascript">
+    var canvas = document.getElementById("myCanvas");
+    if (canvas.getContext)
+    {
+        var ctx = canvas.getContext("2d");
+
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "aqua";
+        ctx.fillStyle = "bisque";
+        ctx.font = "Bold 30px Arial";
+        ctx.textAlign = "left";
+
+        // 绘制线
+        ctx.beginPath(); // 开始绘制
+        ctx.moveTo(10, 10);
+        ctx.lineTo(100, 100);
+        ctx.lineTo(100, 10);
+        ctx.closePath(); // 绘制闭合图形
+
+        ctx.stroke();
+
+        // 矩形
+        ctx.fillRect(50, 50, 50, 50);
+        ctx.strokeRect(5, 5, 150, 100);
+
+        // 文字
+        ctx.fillText("苏", 30, 30);
+
+        // 扇形
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(60, 200, 50, 0, Math.PI * 2, true);
+        ctx.fillStyle = "cadetblue";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(60, 250, 50, 0, Math.PI * 2, true);
+        ctx.lineWidth = 1.0;
+        ctx.strokeStyle = "#000";
+        ctx.stroke();
+        ctx.restore();
+
+        // 颜色渐变
+        ctx.save();
+        var myGradient = ctx.createLinearGradient(10, 300, 110, 400);
+        myGradient.addColorStop(0, "#0f0");
+        myGradient.addColorStop(1, "#f00");
+
+        ctx.beginPath();
+        ctx.fillStyle = myGradient;
+        ctx.fillRect(10, 300, 100, 100);
+        ctx.fill();
+        ctx.restore();
+
+        // 阴影
+        ctx.save();
+        ctx.shadowOffsetX = 10; // 设置水平位移
+        ctx.shadowOffsetY = 10; // 设置垂直位移
+        ctx.shadowBlur = 10; // 设置模糊度
+        ctx.shadowColor = "rgba(0,0,0,0.5)"; // 设置阴影颜色
+
+        ctx.fillStyle = "#C00";
+        ctx.fillRect(10, 410, 100, 100);
+        ctx.restore();
+
+        // 图像处理
+        // 绘制图片
+        var image = new Image();
+        image.src = 'img/isux.png';
+        image.onload = function ()
+        {
+            ctx.drawImage(image, 0, 500);
+        };
+
+        // 获取内容
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // console.log(imageData);
+
+        // toDataURL方法
+        var url = canvas.toDataURL('image/png');
+        // console.log(url);
+
+        // 动画
+        var posX = 20,
+            posY = 100;
+
+        setInterval(function ()
+        {
+            posY += 0.25;
+            ctx.beginPath();
+            ctx.arc(posX, posY, 10, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+        }, 20);
+
+        // 像素处理
+        {
+            // 灰度处理
+            grayscale = function (pixels)
+            {
+                var d = pixels.data;
+                for (var i = 0; i < d.length; i += 4)
+                {
+                    var r = d[i];
+                    var g = d[i + 1];
+                    var b = d[i + 2];
+                    d[i] = d[i + 1] = d[i + 2] = (r + g + b) / 3;
+                }
+                return pixels;
+            };
+
+            // 复古
+            sepia = function (pixels)
+            {
+                var d = pixels.data;
+                for (var i = 0; i < d.length; i += 4)
+                {
+                    var r = d[i];
+                    var g = d[i + 1];
+                    var b = d[i + 2];
+                    d[i] = (r * 0.393) + (g * 0.769) + (b * 0.189); // red
+                    d[i + 1] = (r * 0.349) + (g * 0.686) + (b * 0.168); // green
+                    d[i + 2] = (r * 0.272) + (g * 0.534) + (b * 0.131); // blue
+                }
+                return pixels;
+            };
+
+            // 红色蒙版效果
+            red = function (pixels)
+            {
+                var d = pixels.data;
+                for (var i = 0; i < d.length; i += 4)
+                {
+                    var r = d[i];
+                    var g = d[i + 1];
+                    var b = d[i + 2];
+                    d[i] = (r + g + b) / 3; // 红色通道取平均值
+                    d[i + 1] = d[i + 2] = 0; // 绿色通道和蓝色通道都设为0
+                }
+                return pixels;
+            };
+
+            // 亮度效果
+            brightness = function (pixels, delta)
+            {
+                var d = pixels.data;
+                for (var i = 0; i < d.length; i += 4)
+                {
+                    d[i] += delta; // red
+                    d[i + 1] += delta; // green
+                    d[i + 2] += delta; // blue
+                }
+                return pixels;
+            };
+
+            // 反转效果
+            invert = function (pixels)
+            {
+                var d = pixels.data;
+                for (var i = 0; i < d.length; i += 4)
+                {
+                    d[i] = 255 - d[i];
+                    d[i + 1] = 255 - d[i + 1];
+                    d[i + 2] = 255 - d[i + 2];
+                }
+                return pixels;
+            };
+
+            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            filter = invert;
+            filter(imageData, 50);
+            ctx.putImageData(imageData, 0, 0);
+        }
+    }
+</script>
+</body>
+</html>
